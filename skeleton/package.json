@@ -1,4 +1,5 @@
 {
+  "name": "${{ values.component_id }}",
   "private": true,
   "scripts": {
     "build": "next build",
