@@ -9,7 +9,7 @@ metadata:
     - react
     - nextjs
 spec:
-  owner: web@example.com
+  owner: support@venue.sh
   type: website
   parameters:
     - title: Provide some simple information
@@ -26,6 +26,15 @@ spec:
           title: Description
           type: string
           description: Help others understand what this website is for.
+        environment:
+          title: Environment
+          description: Client Environment
+          type: string
+          default: dev
+          enum:
+            - dev
+            - staging
+            - production
         owner:
           title: Owner
           type: string
@@ -44,7 +53,15 @@ spec:
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
-              - REPLACE_ME
+              - gitlab.adaptavist.net
+            allowedOwners:
+              - venuesh-2023-eoyc/workshop-group
+        defaultBranch:
+          title: Default Branch
+          description: Sets the default branch on the repository. The default value is main.
+          type: string
+          default: "main"
+
   steps:
     - id: template
       name: Fetch Skeleton + Template
@@ -55,6 +72,7 @@ spec:
           - .github/workflows/*
         values:
           component_id: ${{ parameters.component_id }}
+          environment: ${{ parameters.environment }}
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
@@ -66,6 +84,13 @@ spec:
         allowedHosts: ["gitlab.adaptavist.net"]
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: ${{ parameters.defaultBranch }}
+
+    - id: vercel_process_create
+      name: Create Vercel Project
+      action: vercel:project:create
+      input:
+        projectId: ${{ steps.publish.output.projectId }}
 
     - id: register
       name: Register
