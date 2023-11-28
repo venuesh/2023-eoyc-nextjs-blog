@@ -75,6 +75,12 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
 
+    - id: vercel
+      name: Create Vercel Project
+      action: vercel:project:create
+      input:
+        component_id: ${{ parameters.component_id }}
+
     - id: publish
       name: Publish
       action: publish:github
@@ -83,12 +89,10 @@ spec:
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: ${{ parameters.defaultBranch }}
-
-    # - id: vercel_process_create
-    #   name: Create Vercel Project
-    #   action: vercel:project:create
-    #   input:
-    #     projectId: ${{ steps.publish.output.projectId }}
+        secrets:
+          VERCEL_ORG_ID: ${{ steps.vercel.output.vercelOrgId }}
+          VERCEL_PROJECT_ID: ${{ steps.vercel.output.vercelProjectId }}
+          VERCEL_TOKEN: ${{ steps.vercel.output.vercelToken }}
 
     - id: register
       name: Register
@@ -101,6 +105,8 @@ spec:
     links:
       - title: Repository
         url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Vercel Project
+        url: ${{ steps.vercel.output.vercelProjectUrl }}
       - title: Open in catalog
         icon: catalog
         entityRef: ${{ steps['register'].output.entityRef }}
