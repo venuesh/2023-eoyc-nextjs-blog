@@ -53,9 +53,7 @@ spec:
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
-              - gitlab.adaptavist.net
-            allowedOwners:
-              - venuesh-2023-eoyc/workshop-group
+              - github.com
         defaultBranch:
           title: Default Branch
           description: Sets the default branch on the repository. The default value is main.
@@ -79,30 +77,30 @@ spec:
 
     - id: publish
       name: Publish
-      action: publish:gitlab
+      action: publish:github
       input:
-        allowedHosts: ["gitlab.adaptavist.net"]
-        description: This is ${{ parameters.component_id }}
+        allowedHosts: ["github.com"]
+        description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: ${{ parameters.defaultBranch }}
 
-    - id: vercel_process_create
-      name: Create Vercel Project
-      action: vercel:project:create
-      input:
-        projectId: ${{ steps.publish.output.projectId }}
+    # - id: vercel_process_create
+    #   name: Create Vercel Project
+    #   action: vercel:project:create
+    #   input:
+    #     projectId: ${{ steps.publish.output.projectId }}
 
     - id: register
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
 
   output:
     links:
       - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
+        url: ${{ steps['publish'].output.remoteUrl }}
       - title: Open in catalog
         icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+        entityRef: ${{ steps['register'].output.entityRef }}
