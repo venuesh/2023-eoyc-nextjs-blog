@@ -75,11 +75,11 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           owner: ${{ parameters.owner }}
 
-    - id: vercel
-      name: Create Vercel Project
-      action: vercel:project:create
-      input:
-        component_id: ${{ parameters.component_id }}
+    # - id: vercel
+    #   name: Create Vercel Project
+    #   action: vercel:project:create
+    #   input:
+    #     component_id: ${{ parameters.component_id }}
 
     - id: publish
       name: Publish
@@ -89,10 +89,10 @@ spec:
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: ${{ parameters.defaultBranch }}
-        secrets:
-          VERCEL_ORG_ID: ${{ steps.vercel.output.vercelOrgId }}
-          VERCEL_PROJECT_ID: ${{ steps.vercel.output.vercelProjectId }}
-          VERCEL_TOKEN: ${{ steps.vercel.output.vercelToken }}
+        # secrets:
+        #   VERCEL_ORG_ID: ${{ steps.vercel.output.vercelOrgId }}
+        #   VERCEL_PROJECT_ID: ${{ steps.vercel.output.vercelProjectId }}
+        #   VERCEL_TOKEN: ${{ steps.vercel.output.vercelToken }}
 
     - id: register
       name: Register
